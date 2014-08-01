@@ -49,6 +49,24 @@ public class MapTileProviderGroup extends MapTileProviderArray  implements IMapT
 		super(pTileSource, pRegisterReceiver);
 		
 		File f = new File(org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants.OSMDROID_PATH, "layers");
+		
+		// Checking if above mentioned path is valid - Raegdan
+		if (f.exists()) {
+			if (!f.isDirectory()) {
+				//TODO Exists, but not a dir. What to do? Delete? Ask user? - Raegdan
+				Log.e("NextGIS", org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants.OSMDROID_PATH + "/layers is not a dir. NextGIS can't work properly.");
+			}
+			if (!(f.canRead() && f.canWrite())) {
+				//TODO No rights. What to do? - Raegdan
+				Log.e("NextGIS", org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants.OSMDROID_PATH + "/layers isn't writable. NextGIS can't work properly.");				
+			}
+		} else {
+			if (!f.mkdirs()) {
+				//TODO For some mysterious reasons creation failed. What to do? - Raegdan
+				Log.e("NextGIS", org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants.OSMDROID_PATH + "/layers doesn't exist, creation failed. NextGIS can't work properly.");				
+			}
+		}
+		
 		File[] files = f.listFiles();
 		for (File inFile : files) {
 			boolean bHasMeta = false;
